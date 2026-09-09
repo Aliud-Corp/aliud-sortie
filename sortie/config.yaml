@@ -10,7 +10,7 @@
 # par une ligne domestique. Un proxy nommé dans un script ne déplace que les
 # requêtes qui le nomment.
 name: Aliud Sortie
-version: 0.1.0
+version: 0.1.1
 slug: sortie
 description: Un proxy HTTP sur la ligne du domicile, réservé au mesh du studio
 url: https://github.com/Aliud-Corp/aliud-sortie
@@ -32,14 +32,20 @@ options:
   interface: wt0
   # Liste blanche, en expressions régulières de nom d'hôte. Sans elle, une clé
   # volée sur l'hôte ouvre un relais ouvert sur la ligne du domicile.
+  #
+  # `(.*\.)?` et non `(^|\.)` : tinyproxy compare avec `regexec`, donc en
+  # expression rationnelle POSIX étendue, où `^` au milieu d'un groupe n'est pas
+  # une ancre. Relevé le 09/09/2026 dans le journal de l'add-on — « Proxying
+  # refused on filtered domain "api.ipify.org" » alors que le motif semblait
+  # correspondre.
   domaines:
-    - "(^|\\.)x\\.com$"
-    - "(^|\\.)twitter\\.com$"
-    - "(^|\\.)twimg\\.com$"
-    - "(^|\\.)reddit\\.com$"
-    - "(^|\\.)redd\\.it$"
-    - "(^|\\.)redditstatic\\.com$"
-    - "(^|\\.)ipify\\.org$"
+    - "(.*\\.)?x\\.com$"
+    - "(.*\\.)?twitter\\.com$"
+    - "(.*\\.)?twimg\\.com$"
+    - "(.*\\.)?reddit\\.com$"
+    - "(.*\\.)?redd\\.it$"
+    - "(.*\\.)?redditstatic\\.com$"
+    - "(.*\\.)?ipify\\.org$"
   journal: info
 schema:
   port: port

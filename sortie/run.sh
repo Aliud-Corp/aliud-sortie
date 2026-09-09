@@ -60,11 +60,14 @@ Allow 100.64.0.0/10
 
 # CE QUI SERAIT UN AVEU, ET QUI EST COUPÉ ICI
 #
-# tinyproxy ajoute par défaut un en-tête `Via: 1.1 tinyproxy` à chaque requête
-# en clair, et `X-Tinyproxy` peut y joindre l'adresse du client. Les deux
-# annoncent au média qu'il parle à un intermédiaire — exactement le signal que
-# ce montage existe pour ne pas donner. En HTTPS la question ne se pose pas, le
-# CONNECT étant un tunnel, mais un seul appel en clair suffirait à le dire.
+# tinyproxy ajoute par défaut un en-tete Via a chaque requete en clair, et
+# X-Tinyproxy peut y joindre l'adresse du client. Les deux annoncent au media
+# qu'il parle a un intermediaire. En HTTPS la question ne se pose pas, le
+# CONNECT etant un tunnel, mais un seul appel en clair suffirait a le dire.
+#
+# Aucun accent grave dans ce document en ligne : il n'est pas protege, donc le
+# shell y execute ce qui est entre deux accents. Le premier passage l'a montre,
+# le 09/09/2026 -- « X-Tinyproxy: not found » dans le journal de l'add-on.
 DisableViaHeader Yes
 XTinyproxy Off
 
