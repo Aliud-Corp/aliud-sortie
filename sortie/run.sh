@@ -81,7 +81,18 @@ ConnectPort 443
 Filter "/etc/tinyproxy/filtre"
 FilterDefaultDeny Yes
 FilterCaseSensitive No
-FilterURLs Off
+
+# CE RÉGLAGE DÉCIDE SI LA LISTE BLANCHE VEUT DIRE QUELQUE CHOSE
+#
+# Sans lui, tinyproxy compile les motifs en expressions rationnelles POSIX
+# *basiques*, où les parentheses et le point d'interrogation sont des caracteres
+# ordinaires. Le motif (.*\.)?ipify\.org ne correspond alors a rien, la liste
+# blanche refuse tout, et le journal dit seulement « Proxying refused on
+# filtered domain » -- ce qui ressemble a un motif mal ecrit.
+#
+# Mesure du 09/09/2026 : deux ecritures du motif ont echoue avant que ce soit
+# le mode de compilation qui soit en cause, et non elles.
+FilterExtended Yes
 
 LogLevel $journal
 CONF
