@@ -10,7 +10,7 @@
 # par une ligne domestique. Un proxy nommé dans un script ne déplace que les
 # requêtes qui le nomment.
 name: Aliud Sortie
-version: 0.1.2
+version: 0.1.3
 slug: sortie
 description: Un proxy HTTP sur la ligne du domicile, réservé au mesh du studio
 url: https://github.com/Aliud-Corp/aliud-sortie

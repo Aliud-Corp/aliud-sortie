@@ -98,4 +98,10 @@ LogLevel $journal
 CONF
 
 echo "aliud-sortie: $adresse:$port, $nb_domaines domaine(s) autorisé(s), journal $journal"
+# Ce que le journal doit porter pour qu'un refus se diagnostique sans ouvrir la
+# machine : la version du proxy, les motifs tels qu'ils ont ete ecrits, et les
+# reglages du filtre tels qu'ils ont ete generes.
+tinyproxy -v 2>&1 | head -1 | sed 's/^/aliud-sortie: /'
+sed 's/^/aliud-sortie: motif /' /etc/tinyproxy/filtre
+grep -i '^Filter' /etc/tinyproxy/tinyproxy.conf | sed 's/^/aliud-sortie: reglage /'
 exec tinyproxy -d -c /etc/tinyproxy/tinyproxy.conf
