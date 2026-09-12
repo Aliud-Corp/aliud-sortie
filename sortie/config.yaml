@@ -1,14 +1,6 @@
-# La sortie du studio : un proxy HTTP posé sur la ligne du domicile.
-#
-# Ce que ça sert : les scripts d'Hermes tournent sur un serveur d'hébergeur, et
-# plusieurs médias refusent une adresse de datacenter à la première requête.
-# Le code et le modèle restent donc sur Hermes ; seule la sortie réseau passe
-# par ici.
-#
-# Ce que ça n'est pas : un nœud de sortie. Une route par défaut ferait passer
-# tout le trafic de l'hôte — son inférence, sa supervision, ses sauvegardes —
-# par une ligne domestique. Un proxy nommé dans un script ne déplace que les
-# requêtes qui le nomment.
+# Un proxy HTTP posé sur la ligne du domicile, joignable seulement depuis le
+# mesh du studio. Il n'est pas une route par défaut : seules les requêtes qui
+# le nomment passent par lui.
 name: Aliud Sortie
 version: 0.1.4
 slug: sortie
@@ -39,18 +31,10 @@ options:
   # refused on filtered domain "api.ipify.org" » alors que le motif semblait
   # correspondre.
   #
-  # LES SEPT MÉDIAS, ET LE PIÈGE DES FLUX RSS
-  #
-  # Un média lu par le collecteur doit être ici, sinon le proxy refuse et le
-  # collecteur ne voit qu'une absence de réponse — mesuré le 09/09/2026, où les
-  # trois sources de Lobsters sont revenues muettes faute de `lobste.rs` dans
-  # cette liste.
-  #
-  # Les flux RSS n'ont pas d'hôte fixe : ils sont déclarés un par un dans
-  # `platform/collecte/collecte.yaml`, donc cette liste doit suivre ce
-  # fichier-là. Elle est recopiée à la main pour l'instant ; la dériver du
-  # dépôt est la prochaine étape, parce qu'un flux ajouté en pull request qui
-  # ne passe pas ici devient une source muette sans cause lisible.
+  # Un hôte absent d'ici est refusé, et l'appelant ne voit qu'une absence de
+  # réponse. Les hôtes des flux sont déclarés un par un dans
+  # `platform/collecte/collecte.yaml` : cette liste suit ce fichier-là, recopiée
+  # à la main pour l'instant.
   domaines:
     - "(.*\\.)?x\\.com$"
     - "(.*\\.)?twitter\\.com$"
@@ -60,14 +44,11 @@ options:
     - "(.*\\.)?redditstatic\\.com$"
     - "(.*\\.)?ipify\\.org$"
     - "(.*\\.)?ifconfig\\.me$"
-    # lobsters, hacker news et son index de recherche
     - "(.*\\.)?lobste\\.rs$"
     - "(.*\\.)?ycombinator\\.com$"
     - "(.*\\.)?algolia\\.com$"
     - "(.*\\.)?algolianet\\.com$"
-    # arctic shift, les archives publiques de reddit
     - "(.*\\.)?photon-reddit\\.com$"
-    # les flux RSS de collecte.yaml, un hôte par ligne
     - "(.*\\.)?simonwillison\\.net$"
     - "(.*\\.)?lwn\\.net$"
     - "(.*\\.)?phoronix\\.com$"
