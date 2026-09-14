@@ -58,12 +58,10 @@ BasicAuth $utilisateur $mot_de_passe
 # ailleurs. 100.64.0.0/10 est la plage que NetBird distribue.
 Allow 100.64.0.0/10
 
-# CE QUI SERAIT UN AVEU, ET QUI EST COUPÉ ICI
-#
-# tinyproxy ajoute par défaut un en-tete Via a chaque requete en clair, et
-# X-Tinyproxy peut y joindre l'adresse du client. Les deux annoncent au media
-# qu'il parle a un intermediaire. En HTTPS la question ne se pose pas, le
-# CONNECT etant un tunnel, mais un seul appel en clair suffirait a le dire.
+# Deux en-tetes coupes. tinyproxy ajoute Via a chaque requete en clair, et
+# X-Tinyproxy peut y joindre l'adresse du client ; ni l'une ni l'autre n'a de
+# raison de sortir d'ici. En HTTPS la question ne se pose pas, le CONNECT etant
+# un tunnel.
 #
 # Aucun accent grave dans ce document en ligne : il n'est pas protege, donc le
 # shell y execute ce qui est entre deux accents. Le premier passage l'a montre,
@@ -71,11 +69,11 @@ Allow 100.64.0.0/10
 DisableViaHeader Yes
 XTinyproxy Off
 
-# Aucun cache, aucune réécriture : un relevé daté doit être ce que le média a
-# rendu à cet instant, pas ce qu'un intermédiaire avait gardé.
+# Aucun cache, aucune réécriture : une réponse est celle du moment, pas une
+# copie gardée.
 #
 # Les ports où le tunnel est permis. 443 seulement : un CONNECT vers 22 ou 25
-# ferait de cette ligne un relais pour autre chose que de la lecture.
+# ouvrirait autre chose qu'une lecture HTTPS.
 ConnectPort 443
 
 Filter "/etc/tinyproxy/filtre"
