@@ -2,7 +2,7 @@
 # mesh du studio. Il n'est pas une route par défaut : seules les requêtes qui
 # le nomment passent par lui.
 name: Aliud Sortie
-version: 0.1.4
+version: 0.1.5
 slug: sortie
 description: Un proxy HTTP sur la ligne du domicile, réservé au mesh du studio
 url: https://github.com/Aliud-Corp/aliud-sortie
@@ -53,6 +53,24 @@ options:
     - "(.*\\.)?lwn\\.net$"
     - "(.*\\.)?phoronix\\.com$"
     - "(.*\\.)?status-ovhcloud\\.com$"
+    # Les hôtes d'une vidéo TikTok, relevés le 16/09/2026 sur un tirage
+    # réel plutôt que devinés : la page est servie par `www.tiktok.com`, le flux
+    # audio par `v16-webapp-prime.tiktok.com` et `v19-webapp-prime.tiktok.com`,
+    # une redirection passe par `mon-i18n.tiktokv.com`, et le CDN régional rend
+    # `v45.tiktokcdn-eu.com`. Les deux autres régions du CDN sont ajoutées ici
+    # sans avoir été vues : le même compte lu depuis une autre sortie les rend,
+    # et un refus sur celles-là se lirait comme une vidéo illisible.
+    #
+    # Ce que ça ouvre, et ce que ça n'ouvre pas : la compétence
+    # `transcription` d'Aliud reconnaît aussi YouTube, Instagram, X, Vimeo,
+    # Dailymotion et LinkedIn. Aucun de ces hôtes n'est ajouté ici. La liste
+    # grandit quand un lien en a besoin, jamais avant — c'est ce qui la garde
+    # relisable.
+    - "(.*\\.)?tiktok\\.com$"
+    - "(.*\\.)?tiktokv\\.com$"
+    - "(.*\\.)?tiktokcdn\\.com$"
+    - "(.*\\.)?tiktokcdn-eu\\.com$"
+    - "(.*\\.)?tiktokcdn-us\\.com$"
   journal: info
 schema:
   port: port
