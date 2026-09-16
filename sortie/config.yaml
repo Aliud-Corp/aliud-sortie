@@ -2,7 +2,7 @@
 # mesh du studio. Il n'est pas une route par défaut : seules les requêtes qui
 # le nomment passent par lui.
 name: Aliud Sortie
-version: 0.1.5
+version: 0.1.6
 slug: sortie
 description: Un proxy HTTP sur la ligne du domicile, réservé au mesh du studio
 url: https://github.com/Aliud-Corp/aliud-sortie
@@ -53,6 +53,24 @@ options:
     - "(.*\\.)?lwn\\.net$"
     - "(.*\\.)?phoronix\\.com$"
     - "(.*\\.)?status-ovhcloud\\.com$"
+    # LES CINQ HÔTES QUE `collecte.yaml` DÉCLARE ET QUE CETTE LISTE REFUSAIT
+    # Mesuré le 16/09/2026 depuis le conteneur, par le proxy : les cinq rendent
+    # `CONNECT tunnel failed, response 403`, quel que soit le transport. Le refus
+    # vient d'ici, pas des sites — un tunnel refusé n'atteint jamais l'hôte visé,
+    # et le collecteur ne voit qu'une source muette.
+    #
+    # Les quatre premiers sont les laboratoires demandés par le board le même
+    # jour. `krebsonsecurity` était déclaré avant eux et lisait zéro depuis son
+    # arrivée : c'est ce que coûte une liste recopiée à la main, elle se
+    # désynchronise sans rien dire, et ce silence ressemble à un site qui n'a
+    # rien publié.
+    #
+    # Les cinq ne servent qu'un flux ou un plan de site, en lecture.
+    - "(.*\\.)?openai\\.com$"
+    - "(.*\\.)?claude\\.com$"
+    - "(.*\\.)?anthropic\\.com$"
+    - "(.*\\.)?arxiv\\.org$"
+    - "(.*\\.)?krebsonsecurity\\.com$"
     # Les hôtes d'une vidéo TikTok, relevés le 16/09/2026 sur un tirage
     # réel plutôt que devinés : la page est servie par `www.tiktok.com`, le flux
     # audio par `v16-webapp-prime.tiktok.com` et `v19-webapp-prime.tiktok.com`,
