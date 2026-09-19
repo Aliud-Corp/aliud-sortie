@@ -2,7 +2,7 @@
 # mesh du studio. Il n'est pas une route par défaut : seules les requêtes qui
 # le nomment passent par lui.
 name: Aliud Sortie
-version: 0.1.6
+version: 0.2.0
 slug: sortie
 description: Un proxy HTTP sur la ligne du domicile, réservé au mesh du studio
 url: https://github.com/Aliud-Corp/aliud-sortie
@@ -22,73 +22,35 @@ options:
   utilisateur: aliud
   mot_de_passe: ""
   interface: wt0
-  # Liste blanche, en expressions régulières de nom d'hôte. Sans elle, une clé
-  # volée sur l'hôte ouvre un relais ouvert sur la ligne du domicile.
+  # LA LISTE EST OUVERTE DEPUIS LE 2026-09-19, ET C'EST UNE DÉCISION DU BOARD
   #
-  # `(.*\.)?` et non `(^|\.)` : tinyproxy compare avec `regexec`, donc en
-  # expression rationnelle POSIX étendue, où `^` au milieu d'un groupe n'est pas
-  # une ancre. Relevé le 09/09/2026 dans le journal de l'add-on — « Proxying
-  # refused on filtered domain "api.ipify.org" » alors que le motif semblait
-  # correspondre.
+  # Elle portait trente-deux motifs, recopiés à la main depuis
+  # `platform/collecte/collecte.yaml` du dépôt Aliud. Ce que ça a coûté est
+  # écrit dans l'historique de ce fichier : `krebsonsecurity` a lu zéro pendant
+  # des jours sans que rien ne le dise, cinq hôtes déclarés côté Aliud rendaient
+  # `CONNECT tunnel failed, response 403`, et six médias reconnus par la
+  # compétence de transcription n'étaient pas ouverts ici. Une liste recopiée se
+  # désynchronise en silence, et ce silence ressemble à une source qui n'a rien
+  # publié.
   #
-  # Un hôte absent d'ici est refusé, et l'appelant ne voit qu'une absence de
-  # réponse. Les hôtes des flux sont déclarés un par un dans
-  # `platform/collecte/collecte.yaml` : cette liste suit ce fichier-là, recopiée
-  # à la main pour l'instant.
+  # CE QUE CETTE OUVERTURE NE CHANGE PAS, ET QUI PORTE LE POIDS
+  # Trois verrous restent, et ils sont dans `run.sh` :
+  #   - le proxy n'écoute que sur l'adresse du mesh, posée par NetBird ;
+  #   - `BasicAuth` exige le mot de passe des options ;
+  #   - `ConnectPort 443` n'ouvre aucun autre port — ni 22, ni 25.
+  # Un relais ouvert sur Internet demanderait de tomber les trois, pas celui-ci.
+  #
+  # CE QUI CHANGE VRAIMENT
+  # Le code du studio peut joindre n'importe quel hôte en HTTPS par la ligne du
+  # domicile. Le risque n'est plus quelqu'un du dehors, c'est notre propre code
+  # qui compose une adresse que personne n'a relue. Le journal de l'add-on reste
+  # l'endroit où ça se verrait.
+  #
+  # `.*` ET PAS UNE LISTE VIDE : `run.sh` refuse de démarrer sur une liste vide,
+  # parce qu'elle ne laisserait rien passer. Le motif qui dit « tout » est un
+  # motif, pas une absence.
   domaines:
-    - "(.*\\.)?x\\.com$"
-    - "(.*\\.)?twitter\\.com$"
-    - "(.*\\.)?twimg\\.com$"
-    - "(.*\\.)?reddit\\.com$"
-    - "(.*\\.)?redd\\.it$"
-    - "(.*\\.)?redditstatic\\.com$"
-    - "(.*\\.)?ipify\\.org$"
-    - "(.*\\.)?ifconfig\\.me$"
-    - "(.*\\.)?lobste\\.rs$"
-    - "(.*\\.)?ycombinator\\.com$"
-    - "(.*\\.)?algolia\\.com$"
-    - "(.*\\.)?algolianet\\.com$"
-    - "(.*\\.)?photon-reddit\\.com$"
-    - "(.*\\.)?simonwillison\\.net$"
-    - "(.*\\.)?lwn\\.net$"
-    - "(.*\\.)?phoronix\\.com$"
-    - "(.*\\.)?status-ovhcloud\\.com$"
-    # LES CINQ HÔTES QUE `collecte.yaml` DÉCLARE ET QUE CETTE LISTE REFUSAIT
-    # Mesuré le 16/09/2026 depuis le conteneur, par le proxy : les cinq rendent
-    # `CONNECT tunnel failed, response 403`, quel que soit le transport. Le refus
-    # vient d'ici, pas des sites — un tunnel refusé n'atteint jamais l'hôte visé,
-    # et le collecteur ne voit qu'une source muette.
-    #
-    # Les quatre premiers sont les laboratoires demandés par le board le même
-    # jour. `krebsonsecurity` était déclaré avant eux et lisait zéro depuis son
-    # arrivée : c'est ce que coûte une liste recopiée à la main, elle se
-    # désynchronise sans rien dire, et ce silence ressemble à un site qui n'a
-    # rien publié.
-    #
-    # Les cinq ne servent qu'un flux ou un plan de site, en lecture.
-    - "(.*\\.)?openai\\.com$"
-    - "(.*\\.)?claude\\.com$"
-    - "(.*\\.)?anthropic\\.com$"
-    - "(.*\\.)?arxiv\\.org$"
-    - "(.*\\.)?krebsonsecurity\\.com$"
-    # Les hôtes d'une vidéo TikTok, relevés le 16/09/2026 sur un tirage
-    # réel plutôt que devinés : la page est servie par `www.tiktok.com`, le flux
-    # audio par `v16-webapp-prime.tiktok.com` et `v19-webapp-prime.tiktok.com`,
-    # une redirection passe par `mon-i18n.tiktokv.com`, et le CDN régional rend
-    # `v45.tiktokcdn-eu.com`. Les deux autres régions du CDN sont ajoutées ici
-    # sans avoir été vues : le même compte lu depuis une autre sortie les rend,
-    # et un refus sur celles-là se lirait comme une vidéo illisible.
-    #
-    # Ce que ça ouvre, et ce que ça n'ouvre pas : la compétence
-    # `transcription` d'Aliud reconnaît aussi YouTube, Instagram, X, Vimeo,
-    # Dailymotion et LinkedIn. Aucun de ces hôtes n'est ajouté ici. La liste
-    # grandit quand un lien en a besoin, jamais avant — c'est ce qui la garde
-    # relisable.
-    - "(.*\\.)?tiktok\\.com$"
-    - "(.*\\.)?tiktokv\\.com$"
-    - "(.*\\.)?tiktokcdn\\.com$"
-    - "(.*\\.)?tiktokcdn-eu\\.com$"
-    - "(.*\\.)?tiktokcdn-us\\.com$"
+    - ".*"
   journal: info
 schema:
   port: port
