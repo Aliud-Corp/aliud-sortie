@@ -1,0 +1,4 @@
+# Claude Code's personal files. "Yes, and don't ask again" writes the whole
+# command into settings.local.json, secrets included: never commit it.
+**/.claude/settings.local.json
+**/CLAUDE.local.md
